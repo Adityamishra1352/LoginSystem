@@ -1,23 +1,30 @@
 <?php
-$login=false;
-$showError=false;
+$login = false;
+$showError = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require "partials/_dbconnect.php";
     $username = $_POST["username"];
     $password = $_POST["password"];
     $exists = false;
-        $sql = "SELECT * FROM `users` where `username`='$username' AND `password`='$password'";
-        $result = mysqli_query($conn, $sql);
-        $num=mysqli_num_rows($result);
-        if($num== 1){
-            $login=true;
-            session_start();
-            $_SESSION['loggedin']=true;
-            $_SESSION['username']=$username;
-            header("location: welcome.php");
+    $sql = "SELECT * FROM `users` where `username`='$username'";
+    $result = mysqli_query($conn, $sql);
+    $num = mysqli_num_rows($result);
+    if ($num == 1) {
+        while ($rowLogin = mysqli_fetch_assoc($result)) {
+            if (password_verify($password, $rowLogin['password'])) {
+                $login = true;
+                session_start();
+                $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $username;
+                header("location: welcome.php");
+            }
+            else {
+                $showError = "Invalid Credentials";
+            }
         }
-    else{
-        $showError="Invalid Credentials";
+
+    } else {
+        $showError = "Invalid Credentials";
     }
 }
 ?>
@@ -37,18 +44,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php
     require 'partials/_nav.php';
     ?>
-    <?php 
-    if($login){
+    <?php
+    if ($login) {
         echo '
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!</strong> You are logged in.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>';
     }
-    if($showError){
+    if ($showError) {
         echo '
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Failed! </strong>' .$showError.'
+        <strong>Failed! </strong>' . $showError . '
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>';
     }
@@ -60,7 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="/loginSystem/login.php" method="post">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username">
+                <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username"
+                    maxlength="11">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>

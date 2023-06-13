@@ -1,3 +1,11 @@
+<?php
+if(isset($_SESSION['loggedin'])&& $_SESSION['loggedin']==true){
+    $loggedin=true;
+}
+else{
+    $loggedin=false;
+}
+echo '
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="/loginSystem">Login System</a>
@@ -8,16 +16,24 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/loginSystem/welcome.php">Home</a>
-        </li>
+        </li>';
+        if(!$loggedin){
+        echo'
         <li class="nav-item">
           <a class="nav-link" href="/loginSystem/login.php">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/loginSystem/signup.php">Signup</a>
         </li>
+        ';
+        }
+        else{
+            echo '
         <li class="nav-item">
           <a class="nav-link" href="/loginSystem/logout.php">Logout</a>
-        </li>
+        </li>';
+        }
+        echo '
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -25,4 +41,5 @@
       </form>
     </div>
   </div>
-</nav>
+</nav>';
+?>
